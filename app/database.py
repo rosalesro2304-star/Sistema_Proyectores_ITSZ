@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 # Configuración de conexión a PostgreSQL
 # Formato: postgresql://usuario:contraseña@servidor/nombre_base_de_datos
 # TODO: Cambia 'tu_contraseña' por la clave que le pusiste a Postgres al instalarlo
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:ROSALES@localhost/sistema_proyectores"
+SQLALCHEMY_DATABASE_URL = "postgresql://neondb_owner:npg_t2JHn9uLcrMl@ep-billowing-cloud-apw3a2sg.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
