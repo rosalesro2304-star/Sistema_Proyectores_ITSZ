@@ -1,0 +1,10 @@
+[33m9c411f0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Correccion4 de urls render
+[33mfe70ec9[m Correccion3 de URLs render
+[33mb0f0068[m Correccion2 de URLs render
+[33m135727f[m Correccion de urls a Render en caseta.js
+[33m84de1bb[m Ajuste estricto de CORS para produccion
+[33mb354f20[m diseño responsivo para moviles
+[33m4e128ed[m Cambio a psycop2-binary para evitar errores de compilacion
+[33mc334bb1[m Actualizando endpoints del frontend a produccion
+[33mca8c853[m cambio a base de datos en la nube (Neon)
+[33m5cab439[m Version1.0 - Backend y Frontend del Sistema de Proyectores
