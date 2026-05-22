@@ -26,7 +26,7 @@ async function cargarDocentes() {
     tbody.innerHTML = "<tr><td colspan='3'>Cargando...</td></tr>";
 
     try {
-        const respuesta = await fetch("http://127.0.0.1:8000/api/docentes");
+        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/docentes");
         if (respuesta.ok) {
             const docentes = await respuesta.json();
             tbody.innerHTML = "";

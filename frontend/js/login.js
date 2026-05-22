@@ -8,7 +8,7 @@ document.getElementById("formulario-login").addEventListener("submit", async fun
 
     try {
         // Hacemos la petición POST a tu servidor FastAPI
-        const respuesta = await fetch("http://127.0.0.1:8000/api/login", {
+        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

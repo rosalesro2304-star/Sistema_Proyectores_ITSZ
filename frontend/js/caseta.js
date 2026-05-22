@@ -28,7 +28,7 @@ async function cargarPrestamosActivos() {
     tbody.innerHTML = "<tr><td colspan='5'>Cargando datos...</td></tr>";
 
     try {
-        const respuesta = await fetch("http://127.0.0.1:8000/api/prestamos/activos");
+        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/prestamos/activos");
         if (respuesta.ok) {
             const prestamos = await respuesta.json();
             tbody.innerHTML = ""; 

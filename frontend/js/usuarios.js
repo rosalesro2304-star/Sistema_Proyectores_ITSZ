@@ -21,7 +21,7 @@ document.getElementById("btn-guardar-usuario").addEventListener("click", async (
     }
 
     try {
-        const respuesta = await fetch("http://127.0.0.1:8000/api/usuarios", {
+        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/usuarios", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: user, password: pass, rol: rol })

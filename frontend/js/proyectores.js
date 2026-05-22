@@ -16,7 +16,7 @@ async function cargarProyectores() {
     tbody.innerHTML = "<tr><td colspan='4'>Cargando...</td></tr>";
 
     try {
-        const respuesta = await fetch("http://127.0.0.1:8000/api/proyectores/disponibles");
+        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/proyectores/disponibles");
         if (respuesta.ok) {
             const proyectores = await respuesta.json();
             tbody.innerHTML = "";
@@ -52,7 +52,7 @@ document.getElementById("btn-guardar-proyector").addEventListener("click", async
     }
 
     try {
-        const respuesta = await fetch("http://127.0.0.1:8000/api/proyectores", {
+        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/proyectores", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id_proyector: idProy, descripcion: descProy })
@@ -74,7 +74,7 @@ document.getElementById("btn-guardar-proyector").addEventListener("click", async
 async function eliminarProyector(id) {
     if (!confirm(`¿Eliminar proyector ${id}?`)) return;
     try {
-        const respuesta = await fetch(`http://127.0.0.1:8000/api/proyectores/${id}`, { method: "DELETE" });
+        const respuesta = await fetch(`https://sistema-proyectores-itsz.onrender.com/api/proyectores/${id}`, { method: "DELETE" });
         if (respuesta.ok) cargarProyectores();
     } catch (error) {
         console.error("Error:", error);

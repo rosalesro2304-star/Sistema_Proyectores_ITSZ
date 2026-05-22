@@ -27,7 +27,7 @@ async function cargarRankingDocentes() {
     tbody.innerHTML = "<tr><td colspan='2'>Procesando métricas...</td></tr>";
 
     try {
-        const respuesta = await fetch("http://127.0.0.1:8000/api/reportes/ranking-docentes");
+        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/reportes/ranking-docentes");
         if (respuesta.ok) {
             const datos = await respuesta.json();
             tbody.innerHTML = "";
@@ -58,7 +58,7 @@ async function cargarUsoProyectores() {
     tbody.innerHTML = "<tr><td colspan='3'>Procesando métricas...</td></tr>";
 
     try {
-        const respuesta = await fetch("http://127.0.0.1:8000/api/reportes/uso-proyectores");
+        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/reportes/uso-proyectores");
         if (respuesta.ok) {
             const datos = await respuesta.json();
             tbody.innerHTML = "";
