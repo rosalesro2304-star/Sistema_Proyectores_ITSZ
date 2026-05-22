@@ -22,13 +22,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# --- CONFIGURACIÓN CORS ---
+# Configuración estricta de CORS para producción
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite que cualquier frontend se conecte (ideal para desarrollo)
+    allow_origins=["*"], # Permitir acceso desde cualquier origen
     allow_credentials=True,
-    allow_methods=["*"],  # Permite POST, GET, PUT, DELETE
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+
 )
 # ==========================================
 # 1. MÓDULO DE SEGURIDAD Y USUARIOS
