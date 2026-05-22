@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caseta - Control de Proyectores</title>
+    
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <div class="header">
+        <h2>Panel de Vigilancia - ITSZ</h2>
+        <button class="btn-logout" id="btn-salir">Cerrar Sesión</button>
+    </div>
+
+    <button class="btn-nuevo" id="btn-nuevo-prestamo">+ Registrar Salida de Proyector</button>
+
+    <h3>Proyectores En Uso (Activos)</h3>
+    
+    <table id="tabla-activos">
+        <thead>
+            <tr>
+                <th>ID Préstamo</th>
+                <th>Hora Salida</th>
+                <th>Docente</th>
+                <th>Proyector</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+
+    <div id="modal-prestamo" class="modal">
+        <div class="modal-content">
+            <span class="close" id="cerrar-modal-prestamo">&times;</span>
+            <h2>Registro de Préstamo de Proyector</h2>
+            
+            <label for="select-docente">Buscar Docente</label>
+            <select id="select-docente" style="width: 100%; padding: 10px; margin-bottom: 15px;">
+                <option value="">Seleccione un docente...</option>
+            </select>
+
+            <label for="select-proyector">Proyector Disponible</label>
+            <select id="select-proyector" style="width: 100%; padding: 10px; margin-bottom: 15px;">
+                <option value="">Seleccione proyector...</option>
+            </select>
+
+            <label style="display: block; margin-bottom: 15px;">
+                <input type="checkbox" id="check-cable"> Incluye Cable HDMI/VGA
+            </label>
+
+            <label for="observaciones">Observaciones</label>
+            <textarea id="observaciones" rows="4" style="width: 100%; padding: 10px; margin-bottom: 15px;" placeholder="Ingrese observaciones adicionales..."></textarea>
+
+            <button id="btn-siguiente-firma" class="btn-nuevo" style="width: 100%;">SIGUIENTE: CAPTURAR FIRMA &rarr;</button>
+        </div>
+    </div>
+
+    <div id="modal-firma" class="modal">
+        <div class="modal-content text-center">
+            <span class="close" id="cerrar-modal-firma">&times;</span>
+            <h2>Firma del Docente de Conformidad</h2>
+            
+            <canvas id="lienzo-firma" width="400" height="200" style="border: 2px solid #333; border-radius: 4px; cursor: crosshair; background: white; touch-action: none;"></canvas>
+            
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button id="btn-limpiar-firma" style="background: #ccc; color: black; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold;">[ Limpiar trazo ]</button>
+                <button id="btn-guardar-prestamo" style="background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold;">[ Confirmar y Registrar Salida ]</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-devolucion" class="modal">
+        <div class="modal-content text-center">
+            <span class="close" id="cerrar-modal-devolucion">&times;</span>
+            <h2>Recibir Proyector</h2>
+            <p style="text-align: left; font-weight: bold; color: #0056b3;">Préstamo ID: <span id="span-id-prestamo-dev"></span></p>
+
+            <label for="observaciones-dev" style="text-align: left; display: block; margin-top: 10px;">Observaciones de Entrega (Opcional)</label>
+            <textarea id="observaciones-dev" rows="3" style="width: 100%; padding: 10px; margin-bottom: 15px;" placeholder="Ej. Regresó completo, con cables, sin daños..."></textarea>
+
+            <label style="text-align: left; display: block; margin-bottom: 10px;">Firma de Conformidad (Docente)</label>
+            <canvas id="lienzo-firma-dev" width="400" height="200" style="border: 2px solid #333; border-radius: 4px; cursor: crosshair; background: white; touch-action: none;"></canvas>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button id="btn-limpiar-firma-dev" style="background: #ccc; color: black; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold;">[ Limpiar trazo ]</button>
+                <button id="btn-confirmar-devolucion" style="background: #ffc107; color: black; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold;">[ Confirmar Devolución ]</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/caseta.js"></script>
+</body>
+</html>

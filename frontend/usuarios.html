@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Usuarios</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h3>Administración</h3>
+            <a href="dashboard.html">📊 Estadísticas de Uso</a>
+            <a href="docentes.html">👥 Catálogo Docentes</a>
+            <a href="proyectores.html">📹 Catálogo Proyectores</a>
+            <a href="usuarios.html" class="active">🔒 Control Usuarios</a>
+            
+            <a href="#" id="btn-salir-usu" style="margin-top: 60px; background-color: #c0392b;">🚪 Cerrar Sesión</a>
+        </div>
+
+        <div class="main-content">
+            <h2>Control de Acceso y Seguridad</h2>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <h3 style="margin-top: 0;">Dar de Alta Nuevo Usuario</h3>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="user-nuevo" placeholder="Nombre de Usuario" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="password" id="pass-nuevo" placeholder="Contraseña Segura" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <select id="rol-nuevo" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="Vigilante">Rol: Vigilante</option>
+                        <option value="Directivo">Rol: Directivo</option>
+                    </select>
+                    <button id="btn-guardar-usuario" class="btn-nuevo" style="margin-bottom: 0; background: #34495e;">Crear Cuenta</button>
+                </div>
+                <p style="font-size: 12px; color: #666; margin-top: 10px;">La contraseña se encriptará automáticamente en la base de datos.</p>
+            </div>
+
+            <div class="card">
+                <p><em>* Nota: La creación de cuentas está activa. Las contraseñas viajan seguras hacia el backend.</em></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/usuarios.js"></script>
+</body>
+</html>

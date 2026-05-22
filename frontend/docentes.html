@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Docentes</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h3>Administración</h3>
+            <a href="dashboard.html">📊 Estadísticas de Uso</a>
+            <a href="docentes.html" class="active">👥 Catálogo Docentes</a>
+            <a href="proyectores.html">📹 Catálogo Proyectores</a>
+            <a href="usuarios.html">🔒 Control Usuarios</a>
+            
+            <a href="#" id="btn-salir-docentes" style="margin-top: 60px; background-color: #c0392b;">🚪 Cerrar Sesión</a>
+        </div>
+
+        <div class="main-content">
+            <h2>Gestión de Docentes</h2>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <h3 style="margin-top: 0;">Agregar Nuevo Docente</h3>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="nombre-nuevo-docente" placeholder="Nombre completo del docente..." style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button id="btn-guardar-docente" class="btn-nuevo" style="margin-bottom: 0;">Guardar</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <table id="tabla-docentes">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Completo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/docentes.js"></script>
+</body>
+</html>

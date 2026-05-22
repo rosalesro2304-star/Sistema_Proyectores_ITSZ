@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Proyectores</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h3>Administración</h3>
+            <a href="dashboard.html">📊 Estadísticas de Uso</a>
+            <a href="docentes.html">👥 Catálogo Docentes</a>
+            <a href="proyectores.html" class="active">📹 Catálogo Proyectores</a>
+            <a href="usuarios.html">🔒 Control Usuarios</a>
+            
+            <a href="#" id="btn-salir-proy" style="margin-top: 60px; background-color: #c0392b;">🚪 Cerrar Sesión</a>
+        </div>
+
+        <div class="main-content">
+            <h2>Gestión de Proyectores (Inventario)</h2>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <h3 style="margin-top: 0;">Registrar Nuevo Equipo</h3>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="id-nuevo-proyector" placeholder="ID (Ej. V-5)" style="width: 150px; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="text" id="desc-nuevo-proyector" placeholder="Descripción (Ej. Epson Blanco HDMI)" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button id="btn-guardar-proyector" class="btn-nuevo" style="margin-bottom: 0;">Guardar</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <table id="tabla-proyectores">
+                    <thead>
+                        <tr>
+                            <th>ID Equipo</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/proyectores.js"></script>
+</body>
+</html>
