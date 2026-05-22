@@ -215,3 +215,57 @@ label {
     border-left: 4px solid #3498db;
     padding-left: 10px;
 }
+
+/* ==========================================
+   DISEÑO RESPONSIVO (MÓVILES Y TABLETS)
+   ========================================== */
+@media screen and (max-width: 768px) {
+    /* Acomoda la barra lateral hacia arriba */
+    .dashboard-container {
+        flex-direction: column;
+        margin: 0;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    .sidebar h3 {
+        margin-bottom: 15px;
+    }
+
+    /* Convierte los enlaces del menú en botones horizontales */
+    .sidebar a {
+        display: inline-block;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+    /* Ajusta el área central */
+    .main-content {
+        padding: 15px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Una sola columna */
+    }
+
+    /* Ajusta los modales y formularios para que no se salgan de la pantalla */
+    .modal-content, .card {
+        width: 95% !important;
+        margin: 10px auto;
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    /* Hace que las tablas se puedan deslizar a los lados si son muy anchas */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
