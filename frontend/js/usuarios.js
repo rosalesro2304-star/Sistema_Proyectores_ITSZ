@@ -47,6 +47,6 @@ document.getElementById("btn-guardar-usuario").addEventListener("click", async (
         }
     } catch (error) {
         console.error("Error de red:", error);
-        alert("Error de conexión. Asegúrate de que el servidor esté activo.");
+        alert("Error de conexión. Asegúrate de que el servidor esté activo, el usuario ya existe.");
     }
 });
