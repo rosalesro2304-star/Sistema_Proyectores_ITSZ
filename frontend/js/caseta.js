@@ -121,13 +121,102 @@ async function cargarSelects() {
     }
 }
 
-// ... (Canvas y lógica de dibujo siguen igual) ...
+
+// ==========================================
+// LIENZO DIGITAL 1: FIRMA DE SALIDA
+// ==========================================
+const canvas = document.getElementById('lienzo-firma');
+const ctx = canvas.getContext('2d');
+let dibujando = false;
+
+ctx.lineWidth = 3;
+ctx.lineCap = 'round';
+ctx.strokeStyle = '#000';
+
+function redimensionarCanvas() {
+    // Retraso de 50ms para que el modal se renderice antes de tomar medidas
+    setTimeout(() => {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width || 400;
+        canvas.height = rect.height || 200;
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#000';
+    }, 50);
+}
+
+// Función universal para mouse o celular
+function obtenerPosicion(e, elemento) {
+    const rect = elemento.getBoundingClientRect();
+    const clienteX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clienteY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: clienteX - rect.left, y: clienteY - rect.top };
+}
+
+// Eventos para Computadora
+canvas.addEventListener('mousedown', (e) => { dibujando = true; ctx.beginPath(); const pos = obtenerPosicion(e, canvas); ctx.moveTo(pos.x, pos.y); });
+canvas.addEventListener('mouseup', () => { dibujando = false; ctx.beginPath(); });
+canvas.addEventListener('mousemove', (e) => { if (!dibujando) return; const pos = obtenerPosicion(e, canvas); ctx.lineTo(pos.x, pos.y); ctx.stroke(); });
+
+// Eventos para Celular
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); dibujando = true; ctx.beginPath(); const pos = obtenerPosicion(e, canvas); ctx.moveTo(pos.x, pos.y); }, { passive: false });
+canvas.addEventListener('touchend', (e) => { e.preventDefault(); dibujando = false; ctx.beginPath(); }, { passive: false });
+canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (!dibujando) return; const pos = obtenerPosicion(e, canvas); ctx.lineTo(pos.x, pos.y); ctx.stroke(); }, { passive: false });
+
+document.getElementById('btn-limpiar-firma').addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+
+// ==========================================
+// LIENZO DIGITAL 2: FIRMA DE DEVOLUCIÓN
+// ==========================================
+const canvasDev = document.getElementById('lienzo-firma-dev');
+const ctxDev = canvasDev.getContext('2d');
+let dibujandoDev = false;
+
+ctxDev.lineWidth = 3;
+ctxDev.lineCap = 'round';
+ctxDev.strokeStyle = '#000';
+
+function redimensionarCanvasDev() {
+    setTimeout(() => {
+        const rect = canvasDev.getBoundingClientRect();
+        canvasDev.width = rect.width || 400;
+        canvasDev.height = rect.height || 200;
+        ctxDev.lineWidth = 3;
+        ctxDev.lineCap = 'round';
+        ctxDev.strokeStyle = '#000';
+    }, 50);
+}
+
+// Eventos para Computadora
+canvasDev.addEventListener('mousedown', (e) => { dibujandoDev = true; ctxDev.beginPath(); const pos = obtenerPosicion(e, canvasDev); ctxDev.moveTo(pos.x, pos.y); });
+canvasDev.addEventListener('mouseup', () => { dibujandoDev = false; ctxDev.beginPath(); });
+canvasDev.addEventListener('mousemove', (e) => { if (!dibujandoDev) return; const pos = obtenerPosicion(e, canvasDev); ctxDev.lineTo(pos.x, pos.y); ctxDev.stroke(); });
+
+// Eventos para Celular
+canvasDev.addEventListener('touchstart', (e) => { e.preventDefault(); dibujandoDev = true; ctxDev.beginPath(); const pos = obtenerPosicion(e, canvasDev); ctxDev.moveTo(pos.x, pos.y); }, { passive: false });
+canvasDev.addEventListener('touchend', (e) => { e.preventDefault(); dibujandoDev = false; ctxDev.beginPath(); }, { passive: false });
+canvasDev.addEventListener('touchmove', (e) => { e.preventDefault(); if (!dibujandoDev) return; const pos = obtenerPosicion(e, canvasDev); ctxDev.lineTo(pos.x, pos.y); ctxDev.stroke(); }, { passive: false });
+
+document.getElementById('btn-limpiar-firma-dev').addEventListener('click', () => {
+    ctxDev.clearRect(0, 0, canvasDev.width, canvasDev.height);
+});
+
+
+// ==========================================
+// COMUNICACIÓN ASÍNCRONA HTTP (POST / PUT)
+// ==========================================
 
 // Registrar nuevo préstamo (POST)
-document.getElementById('btn-guardar-prestamo').addEventListener('click', async () => {
+document.getElementById('btn-guardar-prestamo').addEventListener('click', async (e) => {
+    e.preventDefault(); // Previene que la página se recargue si está dentro de un form
+
     const firmaBase64 = canvas.toDataURL("image/png");
     
-    if (firmaBase64.length < 3000) { 
+    // Bajamos el límite a 1500 caracteres para aceptar firmas pequeñas o un simple punto
+    if (firmaBase64.length < 1500) { 
         alert("El docente debe firmar en el recuadro.");
         return;
     }
@@ -166,10 +255,12 @@ document.getElementById('btn-guardar-prestamo').addEventListener('click', async 
 });
 
 // Confirmar devolución de equipo (PUT)
-document.getElementById('btn-confirmar-devolucion').addEventListener('click', async () => {
+document.getElementById('btn-confirmar-devolucion').addEventListener('click', async (e) => {
+    e.preventDefault();
+
     const firmaBase64 = canvasDev.toDataURL("image/png");
 
-    if (firmaBase64.length < 3000) {
+    if (firmaBase64.length < 1500) {
         alert("El docente debe firmar la entrega del proyector.");
         return;
     }
