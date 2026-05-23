@@ -1,3 +1,5 @@
+const API_URL = "https://sistema-proyectores-itsz.onrender.com";
+
 document.addEventListener("DOMContentLoaded", () => {
     // Seguridad
     const idUsuario = localStorage.getItem("id_usuario");
@@ -26,7 +28,7 @@ async function cargarDocentes() {
     tbody.innerHTML = "<tr><td colspan='3'>Cargando...</td></tr>";
 
     try {
-        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/docentes");
+        const respuesta = await fetch(`${API_URL}/api/docentes`);
         if (respuesta.ok) {
             const docentes = await respuesta.json();
             tbody.innerHTML = "";
@@ -64,7 +66,7 @@ document.getElementById("btn-guardar-docente").addEventListener("click", async (
     }
 
     try {
-        const respuesta = await fetch("http://127.0.0.1:8000/api/docentes", {
+        const respuesta = await fetch(`${API_URL}/api/docentes`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ nombre_completo: nombre })
@@ -88,7 +90,7 @@ async function eliminarDocente(id) {
     }
 
     try {
-        const respuesta = await fetch(`http://127.0.0.1:8000/api/docentes/${id}`, {
+        const respuesta = await fetch(`${API_URL}/api/docentes/${id}`, {
             method: "DELETE"
         });
 
