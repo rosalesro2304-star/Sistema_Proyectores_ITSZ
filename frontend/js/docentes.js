@@ -11,15 +11,35 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Cargar la lista al iniciar
-    cargarDocentes();
+    // Configurar datos del Widget de Perfil
+    const username = localStorage.getItem("username") || "Administrador";
+    const displayUser = document.getElementById("display-username");
+    const displayRol = document.getElementById("display-rol");
+    if(displayUser) displayUser.innerText = username;
+    if(displayRol) displayRol.innerText = rol;
 
-    // Botón de salir
-    document.getElementById("btn-salir-docentes").addEventListener("click", (e) => {
+    // Control de Modal de Perfil
+    const modalPerfil = document.getElementById("modal-perfil");
+    
+    document.getElementById("btn-abrir-perfil")?.addEventListener("click", () => {
+        document.getElementById("modal-username-grande").innerText = username;
+        document.getElementById("modal-rol-grande").innerText = "Rol: " + rol;
+        modalPerfil.style.display = "block";
+    });
+
+    document.getElementById("cerrar-modal-perfil")?.addEventListener("click", () => {
+        modalPerfil.style.display = "none";
+    });
+
+    // Cierre de sesión seguro desde el modal
+    document.getElementById("btn-cerrar-sesion-modal")?.addEventListener("click", (e) => {
         e.preventDefault();
         localStorage.clear();
         window.location.href = "index.html";
     });
+
+    // Cargar la lista al iniciar
+    cargarDocentes();
 });
 
 // GET: Cargar la lista en la tabla
