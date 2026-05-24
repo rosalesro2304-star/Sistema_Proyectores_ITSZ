@@ -49,6 +49,29 @@ async function cargarPrestamosActivos() {
     const tbody = document.querySelector("#tabla-activos tbody");
     tbody.innerHTML = "<tr><td colspan='5'>Cargando datos...</td></tr>";
 
+    // Función interna para convertir la hora al formato "hh:mm AM/PM"
+    function formatearHoraAmPm(horaBackend) {
+        if (!horaBackend) return "--:--";
+        
+        // Si el backend envía fecha completa (ej. "2026-05-24T14:30:00")
+        const fecha = new Date(horaBackend);
+        if (!isNaN(fecha.getTime())) {
+            return fecha.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        }
+        
+        // Si el backend solo envía la hora en texto (ej. "14:30:00")
+        const partes = horaBackend.split(':');
+        if (partes.length >= 2) {
+            let h = parseInt(partes[0], 10);
+            const m = partes[1];
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12; // Convierte 0 a 12 y las 13 a 1
+            const hStr = h < 10 ? '0' + h : h; // Añade un 0 inicial si es necesario
+            return `${hStr}:${m} ${ampm}`;
+        }
+        return horaBackend;
+    }
+
     try {
         const respuesta = await fetch(`${API_URL}/api/prestamos/activos`);
         if (respuesta.ok) {
@@ -61,10 +84,13 @@ async function cargarPrestamosActivos() {
             }
 
             prestamos.forEach(prestamo => {
+                // Aplicamos el formato a la hora antes de crear la fila
+                const horaLimpia = formatearHoraAmPm(prestamo.hora_salida);
+
                 const fila = `
                     <tr>
                         <td>#${prestamo.id_prestamo}</td>
-                        <td>${prestamo.hora_salida}</td>
+                        <td>${horaLimpia}</td>
                         <td>${prestamo.docente.nombre_completo}</td>
                         <td>${prestamo.proyector.descripcion} (ID: ${prestamo.proyector.id_proyector})</td>
                         <td>
@@ -83,6 +109,7 @@ async function cargarPrestamosActivos() {
         tbody.innerHTML = "<tr><td colspan='5' style='color:red;'>Error de conexión con el servidor.</td></tr>";
     }
 }
+
 
 // Disparador del flujo de devolución
 function recibirProyector(id) {
