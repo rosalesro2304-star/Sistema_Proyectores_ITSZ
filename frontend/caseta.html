@@ -31,8 +31,7 @@
                 <th>Hora Salida</th>
                 <th>Docente</th>
                 <th>Proyector</th>
-                <th>Acción</th>
-            </tr>
+                <th>Cable HDMI</th> <th>Firma</th>      <th>Acciones</th>   </tr>
         </thead>
         <tbody>
         </tbody>
@@ -94,6 +93,32 @@
                 <button id="btn-limpiar-firma-dev" style="background: #ccc; color: black; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold;">[ Limpiar trazo ]</button>
                 <button id="btn-confirmar-devolucion" style="background: #ffc107; color: black; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold;">[ Confirmar Devolución ]</button>
             </div>
+        </div>
+    </div>
+
+    <div id="modal-ver-firma" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close" id="cerrar-modal-ver-firma">&times;</span>
+            <h2>Firma de Salida Registrada</h2>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px dashed #ccc; margin-top: 15px;">
+                <img id="img-firma-mostrar" src="" style="width: 100%; max-width: 400px; background: white;" alt="Firma del Docente">
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-editar-prestamo" class="modal">
+        <div class="modal-content">
+            <span class="close" id="cerrar-modal-editar">&times;</span>
+            <h2>Editar Préstamo #<span id="edit-id-prestamo"></span></h2>
+            
+            <label style="display: block; margin-bottom: 15px; margin-top: 15px;">
+                <input type="checkbox" id="edit-check-cable"> Se incluyó Cable HDMI/VGA
+            </label>
+
+            <label for="edit-observaciones">Observaciones</label>
+            <textarea id="edit-observaciones" rows="4" style="width: 100%; padding: 10px; margin-bottom: 15px;"></textarea>
+
+            <button id="btn-guardar-edicion" class="btn-nuevo" style="width: 100%; background: #007bff;">💾 Guardar Cambios</button>
         </div>
     </div>
 

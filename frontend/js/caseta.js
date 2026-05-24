@@ -1,4 +1,5 @@
 let idPrestamoActual = null;
+let idAEditar = null; // NUEVA VARIABLE GLOBAL PARA EDICIÓN
 const API_URL = "https://sistema-proyectores-itsz.onrender.com";
 
 // ==========================================
@@ -47,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Consulta asíncrona para renderizar la tabla principal
 async function cargarPrestamosActivos() {
     const tbody = document.querySelector("#tabla-activos tbody");
-    tbody.innerHTML = "<tr><td colspan='5'>Cargando datos...</td></tr>";
+    tbody.innerHTML = "<tr><td colspan='7'>Cargando datos...</td></tr>";
 
     // Función interna para convertir la hora al formato "hh:mm AM/PM"
     function formatearHoraAmPm(horaBackend) {
@@ -79,7 +80,7 @@ async function cargarPrestamosActivos() {
             tbody.innerHTML = ""; 
 
             if (prestamos.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='5'>No hay proyectores prestados en este momento.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='7'>No hay proyectores prestados en este momento.</td></tr>";
                 return;
             }
 
@@ -87,16 +88,35 @@ async function cargarPrestamosActivos() {
                 // Aplicamos el formato a la hora antes de crear la fila
                 const horaLimpia = formatearHoraAmPm(prestamo.hora_salida);
 
+                // NUEVO: Lógica de Palomita y Tacha para HDMI
+                const cableBadge = prestamo.incluye_cable 
+                    ? '<span style="font-size:20px;" title="Se llevó cable HDMI">✅</span>' 
+                    : '<span style="font-size:20px;" title="No lleva cable">❌</span>';
+                
+                // NUEVO: Botón para ver la firma si existe
+                const btnFirma = prestamo.firma_salida 
+                    ? `<button onclick="verFirma('${prestamo.firma_salida}')" style="background:#17a2b8; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer; font-size:12px;">👁️ Ver Firma</button>` 
+                    : 'Sin firma';
+
+                // Escapar comillas en observaciones para evitar errores de JS
+                const obsSegura = prestamo.observaciones ? prestamo.observaciones.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
+
                 const fila = `
                     <tr>
                         <td>#${prestamo.id_prestamo}</td>
                         <td>${horaLimpia}</td>
                         <td>${prestamo.docente.nombre_completo}</td>
                         <td>${prestamo.proyector.descripcion} (ID: ${prestamo.proyector.id_proyector})</td>
-                        <td>
+                        <td style="text-align:center;">${cableBadge}</td>
+                        <td style="text-align:center;">${btnFirma}</td>
+                        <td style="display:flex; gap:5px; justify-content:center;">
+                            <button style="background:#007bff; color:white; border:none; padding:5px 10px; cursor:pointer; font-weight:bold; border-radius:4px;" 
+                                    onclick="abrirEditar(${prestamo.id_prestamo}, ${prestamo.incluye_cable}, '${obsSegura}')">
+                                ✏️ Editar
+                            </button>
                             <button style="background:#ffc107; border:none; padding:5px 10px; cursor:pointer; font-weight:bold; border-radius:4px;" 
                                     onclick="recibirProyector(${prestamo.id_prestamo})">
-                                Recibir
+                                📥 Recibir
                             </button>
                         </td>
                     </tr>
@@ -106,9 +126,63 @@ async function cargarPrestamosActivos() {
         }
     } catch (error) {
         console.error("Error al cargar la tabla:", error);
-        tbody.innerHTML = "<tr><td colspan='5' style='color:red;'>Error de conexión con el servidor.</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='7' style='color:red;'>Error de conexión con el servidor.</td></tr>";
     }
 }
+
+
+// ==========================================
+// NUEVAS FUNCIONES GLOBALES (VER FIRMA Y EDITAR)
+// ==========================================
+
+// Mostrar modal de firma
+const modalVerFirma = document.getElementById("modal-ver-firma");
+document.getElementById("cerrar-modal-ver-firma").onclick = () => modalVerFirma.style.display = "none";
+
+window.verFirma = function(firmaBase64) {
+    document.getElementById("img-firma-mostrar").src = firmaBase64;
+    modalVerFirma.style.display = "block";
+};
+
+// Mostrar modal de edición
+const modalEditar = document.getElementById("modal-editar-prestamo");
+document.getElementById("cerrar-modal-editar").onclick = () => modalEditar.style.display = "none";
+
+window.abrirEditar = function(id, tieneCable, observaciones) {
+    idAEditar = id;
+    document.getElementById("edit-id-prestamo").innerText = id;
+    document.getElementById("edit-check-cable").checked = tieneCable;
+    document.getElementById("edit-observaciones").value = observaciones;
+    modalEditar.style.display = "block";
+};
+
+// Guardar edición vía PUT
+document.getElementById("btn-guardar-edicion").addEventListener("click", async () => {
+    const dataAEditar = {
+        incluye_cable: document.getElementById("edit-check-cable").checked,
+        observaciones: document.getElementById("edit-observaciones").value
+    };
+
+    try {
+        const respuesta = await fetch(`${API_URL}/api/prestamos/${idAEditar}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dataAEditar)
+        });
+
+        if (respuesta.ok) {
+            alert("¡Registro actualizado exitosamente!");
+            modalEditar.style.display = "none";
+            cargarPrestamosActivos();
+        } else {
+            const err = await respuesta.json();
+            alert("Error al editar (Verifica tu backend): " + (err.detail || ""));
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Falló la conexión. Revisa que el backend permita PUT en /api/prestamos/{id}.");
+    }
+});
 
 
 // Disparador del flujo de devolución
