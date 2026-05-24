@@ -9,6 +9,7 @@ from sqlalchemy import Column, Integer, String, func
 from app.database import engine, Base, get_db
 from app.models import modelos
 from app.schemas import esquemas
+from zoneinfo import ZoneInfo
 
 # Configuración de seguridad para contraseñas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -101,11 +102,11 @@ def obtener_proyectores_disponibles(db: Session = Depends(get_db)):
 
 @app.post("/api/prestamos")
 def registrar_prestamo(prestamo: esquemas.PrestamoCrear, db: Session = Depends(get_db)):
-    # 1. Armar el registro del préstamo con la hora actual del servidor
+    # 1. Armar el registro del préstamo con la hora real de México
     nuevo_prestamo = modelos.Prestamo(
         id_docente=prestamo.id_docente,
         id_proyector=prestamo.id_proyector,
-        hora_salida=datetime.now().time(),
+        hora_salida=datetime.now(ZoneInfo("America/Mexico_City")).time(),
         incluye_cable=prestamo.incluye_cable,
         observaciones=prestamo.observaciones,
         firma_salida=prestamo.firma_salida,
@@ -165,8 +166,8 @@ def devolver_proyector(id_prestamo: int, datos: esquemas.PrestamoDevolucion, db:
     if prestamo_db.estado_prestamo == "Devuelto":
         raise HTTPException(status_code=400, detail="Este préstamo ya había sido devuelto anteriormente.")
 
-    # 2. Registrar datos de devolución
-    prestamo_db.hora_entrega = datetime.now().time()
+    # 2. Registrar datos de devolución con la hora real de México
+    prestamo_db.hora_entrega = datetime.now(ZoneInfo("America/Mexico_City")).time()
     prestamo_db.firma_entrega = datos.firma_entrega
     prestamo_db.estado_prestamo = "Devuelto"
     
@@ -294,3 +295,4 @@ def eliminar_proyector(id_proyector: str, db: Session = Depends(get_db)):
     db.delete(proyector_db)
     db.commit()
     return {"mensaje": "Proyector eliminado correctamente del inventario"}
+
