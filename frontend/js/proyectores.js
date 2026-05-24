@@ -1,18 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
-    if (localStorage.getItem("rol") !== "Directivo") {
+    // 1. Definimos la variable 'rol' correctamente para que exista en todo el bloque
+    const rol = localStorage.getItem("rol");
+    
+    // 2. Validamos la seguridad
+    if (rol !== "Directivo") {
         window.location.href = "index.html";
         return;
     }
+    
     cargarProyectores();
 
-    // Configurar datos del Widget de Perfil
+    // 3. Configurar datos del Widget de Perfil
     const username = localStorage.getItem("username") || "Administrador";
     const displayUser = document.getElementById("display-username");
     const displayRol = document.getElementById("display-rol");
+    
     if(displayUser) displayUser.innerText = username;
-    if(displayRol) displayRol.innerText = rol; // Usa la variable 'rol' que ya validas arriba
+    if(displayRol) displayRol.innerText = rol; // Ahora sí sabe qué es 'rol'
 
-    // Control de Modal de Perfil
+    // 4. Control de Modal de Perfil
     const modalPerfil = document.getElementById("modal-perfil");
     
     document.getElementById("btn-abrir-perfil")?.addEventListener("click", () => {
@@ -25,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modalPerfil.style.display = "none";
     });
 
-    // Cierre de sesión seguro desde el modal
+    // 5. Cierre de sesión seguro desde el modal
     document.getElementById("btn-cerrar-sesion-modal")?.addEventListener("click", (e) => {
         e.preventDefault();
         localStorage.clear();
