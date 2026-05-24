@@ -269,3 +269,50 @@ label {
         white-space: nowrap;
     }
 }
+/* ==========================================
+   WIDGET DE PERFIL DE USUARIO
+   ========================================== */
+.widget-perfil {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+    color: white; /* Texto blanco para que resalte en el sidebar oscuro */
+}
+
+.widget-perfil:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.avatar-mini {
+    background: #fff;
+    color: #333;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.info-perfil-mini {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-perfil-mini span {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.info-perfil-mini small {
+    font-size: 11px;
+    color: #ddd;
+}

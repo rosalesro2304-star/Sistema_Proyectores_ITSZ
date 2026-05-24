@@ -1,4 +1,4 @@
-let idPrestamoActual = null; // Almacena el ID del préstamo que se va a devolver
+let idPrestamoActual = null;
 const API_URL = "https://sistema-proyectores-itsz.onrender.com";
 
 // ==========================================
@@ -13,14 +13,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // 2. Cargar registros activos en la interfaz de usuario
-    cargarPrestamosActivos();
+    // 2. Lógica del Widget de Perfil
+    const username = localStorage.getItem("username") || "Usuario";
+    const rol = localStorage.getItem("rol") || "Vigilante";
 
-    // 3. Manejo de cierre de sesión seguro
-    document.getElementById("btn-salir").addEventListener("click", () => {
+    const displayUser = document.getElementById("display-username");
+    const displayRol = document.getElementById("display-rol");
+    if(displayUser) displayUser.innerText = username;
+    if(displayRol) displayRol.innerText = rol;
+
+    const modalPerfil = document.getElementById("modal-perfil");
+    
+    document.getElementById("btn-abrir-perfil")?.addEventListener("click", () => {
+        document.getElementById("modal-username-grande").innerText = username;
+        document.getElementById("modal-rol-grande").innerText = "Rol: " + rol;
+        modalPerfil.style.display = "block";
+    });
+
+    document.getElementById("cerrar-modal-perfil")?.addEventListener("click", () => {
+        modalPerfil.style.display = "none";
+    });
+
+    // 3. Manejo de cierre de sesión desde el modal
+    document.getElementById("btn-cerrar-sesion-modal")?.addEventListener("click", () => {
         localStorage.clear();
         window.location.href = "index.html";
     });
+
+    // 4. Cargar registros activos en la interfaz de usuario
+    cargarPrestamosActivos();
 });
 
 // Consulta asíncrona para renderizar la tabla principal
@@ -134,7 +155,6 @@ ctx.lineCap = 'round';
 ctx.strokeStyle = '#000';
 
 function redimensionarCanvas() {
-    // Retraso de 50ms para que el modal se renderice antes de tomar medidas
     setTimeout(() => {
         const rect = canvas.getBoundingClientRect();
         canvas.width = rect.width || 400;
@@ -145,7 +165,6 @@ function redimensionarCanvas() {
     }, 50);
 }
 
-// Función universal para mouse o celular
 function obtenerPosicion(e, elemento) {
     const rect = elemento.getBoundingClientRect();
     const clienteX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -153,12 +172,10 @@ function obtenerPosicion(e, elemento) {
     return { x: clienteX - rect.left, y: clienteY - rect.top };
 }
 
-// Eventos para Computadora
 canvas.addEventListener('mousedown', (e) => { dibujando = true; ctx.beginPath(); const pos = obtenerPosicion(e, canvas); ctx.moveTo(pos.x, pos.y); });
 canvas.addEventListener('mouseup', () => { dibujando = false; ctx.beginPath(); });
 canvas.addEventListener('mousemove', (e) => { if (!dibujando) return; const pos = obtenerPosicion(e, canvas); ctx.lineTo(pos.x, pos.y); ctx.stroke(); });
 
-// Eventos para Celular
 canvas.addEventListener('touchstart', (e) => { e.preventDefault(); dibujando = true; ctx.beginPath(); const pos = obtenerPosicion(e, canvas); ctx.moveTo(pos.x, pos.y); }, { passive: false });
 canvas.addEventListener('touchend', (e) => { e.preventDefault(); dibujando = false; ctx.beginPath(); }, { passive: false });
 canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (!dibujando) return; const pos = obtenerPosicion(e, canvas); ctx.lineTo(pos.x, pos.y); ctx.stroke(); }, { passive: false });
@@ -190,12 +207,10 @@ function redimensionarCanvasDev() {
     }, 50);
 }
 
-// Eventos para Computadora
 canvasDev.addEventListener('mousedown', (e) => { dibujandoDev = true; ctxDev.beginPath(); const pos = obtenerPosicion(e, canvasDev); ctxDev.moveTo(pos.x, pos.y); });
 canvasDev.addEventListener('mouseup', () => { dibujandoDev = false; ctxDev.beginPath(); });
 canvasDev.addEventListener('mousemove', (e) => { if (!dibujandoDev) return; const pos = obtenerPosicion(e, canvasDev); ctxDev.lineTo(pos.x, pos.y); ctxDev.stroke(); });
 
-// Eventos para Celular
 canvasDev.addEventListener('touchstart', (e) => { e.preventDefault(); dibujandoDev = true; ctxDev.beginPath(); const pos = obtenerPosicion(e, canvasDev); ctxDev.moveTo(pos.x, pos.y); }, { passive: false });
 canvasDev.addEventListener('touchend', (e) => { e.preventDefault(); dibujandoDev = false; ctxDev.beginPath(); }, { passive: false });
 canvasDev.addEventListener('touchmove', (e) => { e.preventDefault(); if (!dibujandoDev) return; const pos = obtenerPosicion(e, canvasDev); ctxDev.lineTo(pos.x, pos.y); ctxDev.stroke(); }, { passive: false });
@@ -209,13 +224,11 @@ document.getElementById('btn-limpiar-firma-dev').addEventListener('click', () =>
 // COMUNICACIÓN ASÍNCRONA HTTP (POST / PUT)
 // ==========================================
 
-// Registrar nuevo préstamo (POST)
 document.getElementById('btn-guardar-prestamo').addEventListener('click', async (e) => {
-    e.preventDefault(); // Previene que la página se recargue si está dentro de un form
+    e.preventDefault(); 
 
     const firmaBase64 = canvas.toDataURL("image/png");
     
-    // Bajamos el límite a 1500 caracteres para aceptar firmas pequeñas o un simple punto
     if (firmaBase64.length < 1500) { 
         alert("El docente debe firmar en el recuadro.");
         return;
@@ -254,7 +267,6 @@ document.getElementById('btn-guardar-prestamo').addEventListener('click', async 
     }
 });
 
-// Confirmar devolución de equipo (PUT)
 document.getElementById('btn-confirmar-devolucion').addEventListener('click', async (e) => {
     e.preventDefault();
 
