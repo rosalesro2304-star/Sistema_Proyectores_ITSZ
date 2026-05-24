@@ -9,16 +9,41 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+
+
+
     // 2. Disparar consultas analíticas al backend
     cargarRankingDocentes();
     cargarUsoProyectores();
 
-    // 3. Manejo de Salida Segura
-    document.getElementById("btn-salir-dash").addEventListener("click", (e) => {
+// Configurar datos del Widget de Perfil
+    const username = localStorage.getItem("username") || "Administrador";
+    const displayUser = document.getElementById("display-username");
+    const displayRol = document.getElementById("display-rol");
+    if(displayUser) displayUser.innerText = username;
+    if(displayRol) displayRol.innerText = rol; // Usa la variable 'rol' que ya validas arriba
+
+    // Control de Modal de Perfil
+    const modalPerfil = document.getElementById("modal-perfil");
+    
+    document.getElementById("btn-abrir-perfil")?.addEventListener("click", () => {
+        document.getElementById("modal-username-grande").innerText = username;
+        document.getElementById("modal-rol-grande").innerText = "Rol: " + rol;
+        modalPerfil.style.display = "block";
+    });
+
+    document.getElementById("cerrar-modal-perfil")?.addEventListener("click", () => {
+        modalPerfil.style.display = "none";
+    });
+
+    // Cierre de sesión seguro desde el modal
+    document.getElementById("btn-cerrar-sesion-modal")?.addEventListener("click", (e) => {
         e.preventDefault();
         localStorage.clear();
         window.location.href = "index.html";
     });
+
+
 });
 
 // Consumir el endpoint de agregación: Ranking de Maestros

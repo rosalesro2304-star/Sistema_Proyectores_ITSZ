@@ -12,12 +12,18 @@
     <div class="dashboard-container">
         <div class="sidebar">
             <h3>Administración</h3>
+            <div class="widget-perfil" id="btn-abrir-perfil" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; color: white;">
+                <div class="avatar-mini" style="background: white; color: #333; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: bold;">👤</div>
+                <div class="info-perfil-mini" style="display: flex; flex-direction: column;">
+                    <span id="display-username" style="font-size: 14px; font-weight: bold;">Cargando...</span>
+                    <small id="display-rol" style="font-size: 11px; color: #ccc;">Directivo</small>
+                </div>
+            </div>
             <a href="dashboard.html" class="active">📊 Estadísticas de Uso</a>
             <a href="docentes.html">👥 Docentes</a>
             <a href="proyectores.html">📹 Proyectores</a>
             <a href="usuarios.html">🔒 Control Usuarios</a>
-            
-            <a href="#" id="btn-salir-dash" style="margin-top: 60px; background-color: #c0392b;">🚪 Cerrar Sesión</a>
+
         </div>
 
         <div class="main-content">
@@ -56,7 +62,19 @@
             </div>
         </div>
     </div>
-
+    <div id="modal-perfil" class="modal">
+    <div class="modal-content" style="text-align: center; max-width: 320px;">
+        <span class="close" id="cerrar-modal-perfil">&times;</span>
+        <div style="font-size: 80px; margin-bottom: 10px;">👤</div>
+        <h2 id="modal-username-grande" style="margin-top: 0; color: #333;">Usuario</h2>
+        <p id="modal-rol-grande" style="color: #666; font-weight: bold; margin-bottom: 25px;">Rol</p>
+        <button id="btn-cerrar-sesion-modal" style="background-color: #c0392b; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold;">
+            🚪 Cerrar Sesión
+        </button>
+    </div>
+    
+</div>
     <script src="js/dashboard.js"></script>
+
 </body>
 </html>
