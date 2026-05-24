@@ -41,6 +41,11 @@ class PrestamoCrear(BaseModel):
     firma_salida: str  # Aquí recibiremos el string gigante del Canvas (Base64)
     registrado_por: int
 
+# --- ESQUEMA PARA EDITAR PRÉSTAMO (NUEVO) ---
+class PrestamoEditar(BaseModel):
+    incluye_cable: bool
+    observaciones: str | None = None
+
 # --- ESQUEMA PARA LA DEVOLUCIÓN ---
 class PrestamoDevolucion(BaseModel):
     firma_entrega: str  # El Base64 de la firma de recibido
@@ -59,7 +64,11 @@ class PrestamoActivoRespuesta(BaseModel):
     estado_prestamo: str
     observaciones: str | None = None
     
-    # ¡Aquí ocurre la magia! Anidamos las respuestas que ya tenías
+    # ¡NUEVO: Variables expuestas para el frontend!
+    incluye_cable: bool
+    firma_salida: str | None
+    
+    # Anidamos las respuestas que ya tenías
     docente: DocenteRespuesta
     proyector: ProyectorRespuesta
 
@@ -89,4 +98,3 @@ class DocenteCrear(BaseModel):
 class ProyectorCrear(BaseModel):
     id_proyector: str
     descripcion: str
-    

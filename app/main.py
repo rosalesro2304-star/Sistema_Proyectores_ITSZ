@@ -136,6 +136,23 @@ def obtener_prestamos_activos(db: Session = Depends(get_db)):
 # 4. COMPLETANDO EL CRUD (ACTUALIZAR Y ELIMINAR)
 # ==========================================
 
+@app.put("/api/prestamos/{id_prestamo}")
+def editar_prestamo(id_prestamo: int, payload: esquemas.PrestamoEditar, db: Session = Depends(get_db)):
+    """ACTUALIZAR: Modifica el cable y observaciones de un préstamo activo"""
+    prestamo_db = db.query(modelos.Prestamo).filter(modelos.Prestamo.id_prestamo == id_prestamo).first()
+    
+    if not prestamo_db:
+        raise HTTPException(status_code=404, detail="El préstamo no existe")
+    
+    # Aplica los cambios
+    prestamo_db.incluye_cable = payload.incluye_cable
+    prestamo_db.observaciones = payload.observaciones
+    
+    db.commit()
+    db.refresh(prestamo_db)
+    
+    return {"mensaje": "Registro editado correctamente"}
+
 @app.put("/api/prestamos/{id_prestamo}/devolucion")
 def devolver_proyector(id_prestamo: int, datos: esquemas.PrestamoDevolucion, db: Session = Depends(get_db)):
     """ACTUALIZAR (Update): Registra la entrega del proyector y lo libera en el almacén"""
