@@ -22,10 +22,17 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
+origins = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://sistema-proyectores-itsz.vercel.app", # <-- Tu URL corta de producción
+    "https://sistema-proyectores-itsz-b35dnrpx7-rosalesro2304-stars-projects.vercel.app" # <-- El enlace de preview que me pasaste
+]
 # Configuración estricta de CORS para producción
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Permitir acceso desde cualquier origen
+    allow_origins=origins, # Permitir acceso desde cualquier origen
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
