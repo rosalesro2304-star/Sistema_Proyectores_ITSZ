@@ -443,24 +443,24 @@ async function cargarHistorial() {
 
 // Pintar la tabla aplicando filtros
 // Pintar la tabla aplicando filtros, cable HDMI, observaciones y firmas
+// Pintar la tabla aplicando filtros, cable HDMI, observaciones separadas y firmas
 function renderizarHistorial() {
     const tbody = document.querySelector("#tabla-historial tbody");
     tbody.innerHTML = "";
     
     const orden = document.getElementById("orden-historial").value;
-    
     let datosOrdenados = [...datosHistorialGlobal];
     
-    // Ordenar fechas
+    // Ordenación por fecha y hora
     datosOrdenados.sort((a, b) => {
         const fechaHoraA = new Date(`${a.fecha_prestamo}T${a.hora_salida}`);
         const fechaHoraB = new Date(`${b.fecha_prestamo}T${b.hora_salida}`);
         return orden === "desc" ? fechaHoraB - fechaHoraA : fechaHoraA - fechaHoraB;
     });
 
-    // Ahora son 10 columnas, actualizamos el colspan
+    // Actualizado el colspan a 11 por las nuevas columnas instaladas
     if (datosOrdenados.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='10'>No hay registros en el historial.</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='11'>No hay registros en el historial.</td></tr>";
         return;
     }
 
@@ -488,26 +488,46 @@ function renderizarHistorial() {
             ? '<span style="background:#d4edda; color:#155724; padding:3px 8px; border-radius:10px; font-size:12px; font-weight:bold;">Devuelto</span>'
             : '<span style="background:#fff3cd; color:#856404; padding:3px 8px; border-radius:10px; font-size:12px; font-weight:bold;">En Uso</span>';
 
-        // Lógica visual del cable HDMI
         const badgeCable = p.incluye_cable 
             ? '<span style="font-size:16px;" title="Se llevó cable HDMI">✅</span>' 
             : '<span style="font-size:16px;" title="No lleva cable">❌</span>';
 
-        // Lógica de observaciones
-        const textoObservaciones = p.observaciones 
-            ? `<span style="font-size: 12px; color: #555;" title="${p.observaciones}">${p.observaciones}</span>` 
-            : '<span style="color: #bbb; font-style: italic;">Ninguna</span>';
+        // NUEVO: Separar las observaciones de salida y entrada mediante código
+        let obsSalida = "Ninguna observación registrada.";
+        let obsEntrada = "Sin observaciones en la entrega.";
 
-        // Lógica de botones de firmas
-        let botonesFirmas = '';
+        if (p.observaciones) {
+            if (p.observaciones.includes(" | Devuelto con: ")) {
+                const partes = p.observaciones.split(" | Devuelto con: ");
+                obsSalida = partes[0] || "Ninguna observación registrada.";
+                obsEntrada = partes[1] || "Sin observaciones en la entrega.";
+            } else {
+                // Si no tiene el delimitador, correspondía a la salida original
+                obsSalida = p.observaciones;
+            }
+        }
+
+        // Sanitización para evitar que comillas simples o dobles rompan el string del onclick
+        const obsSalidaSegura = obsSalida.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const obsEntradaSegura = obsEntrada.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+        // Renderizado de botones interactivos de observaciones
+        const btnObsSalida = `<button onclick="verObservacion('${obsSalidaSegura}', 'Observaciones de Salida')" style="background:#6c757d; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">📄 Ver</button>`;
+        
+        const btnObsEntrada = p.estado_prestamo === "Devuelto"
+            ? `<button onclick="verObservacion('${obsEntradaSegura}', 'Observaciones de Entrada')" style="background:#6c757d; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">📄 Ver</button>`
+            : `<span style="color:#bbb; font-style:italic; font-size:12px;">Pendiente</span>`;
+
+        // Botones de firmas
+        let BlackBoxesFirmas = '';
         if (p.firma_salida) {
-            botonesFirmas += `<button onclick="verFirma('${p.firma_salida}')" style="background:#6c757d; color:white; border:none; padding:3px 6px; border-radius:4px; cursor:pointer; font-size:11px; margin-right:3px;" title="Ver firma de salida">✍️ Salida</button>`;
+            BlackBoxesFirmas += `<button onclick="verFirma('${p.firma_salida}')" style="background:#17a2b8; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer; font-size:11px; margin-right:3px; font-weight:bold;"> Salida</button>`;
         }
         if (p.firma_entrega) {
-            botonesFirmas += `<button onclick="verFirma('${p.firma_entrega}')" style="background:#28a745; color:white; border:none; padding:3px 6px; border-radius:4px; cursor:pointer; font-size:11px;" title="Ver firma de entrega">✍️ Entrada</button>`;
+            BlackBoxesFirmas += `<button onclick="verFirma('${p.firma_entrega}')" style="background:#28a745; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer; font-size:11px; font-weight:bold;"> Entrada</button>`;
         }
         if (!p.firma_salida && !p.firma_entrega) {
-            botonesFirmas = '<span style="color: #bbb;">Sin firmas</span>';
+            BlackBoxesFirmas = '<span style="color: #bbb; font-size:12px;">Sin firmas</span>';
         }
 
         const fila = `
@@ -519,8 +539,9 @@ function renderizarHistorial() {
                 <td>${p.docente.nombre_completo}</td>
                 <td>${p.proyector.descripcion}</td>
                 <td style="text-align:center;">${badgeCable}</td>
-                <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${textoObservaciones}</td>
-                <td style="text-align:center; white-space: nowrap;">${botonesFirmas}</td>
+                <td style="text-align:center;">${btnObsSalida}</td>
+                <td style="text-align:center;">${btnObsEntrada}</td>
+                <td style="text-align:center; white-space: nowrap;">${BlackBoxesFirmas}</td>
                 <td style="text-align:center;">${badgeEstado}</td>
             </tr>
         `;
@@ -528,3 +549,14 @@ function renderizarHistorial() {
     });
 }
 
+// NUEVO: Funciones de control de eventos para el modal de visualización de observaciones
+const modalVerObs = document.getElementById("modal-ver-obs");
+if (document.getElementById("cerrar-modal-ver-obs")) {
+    document.getElementById("cerrar-modal-ver-obs").onclick = () => modalVerObs.style.display = "none";
+}
+
+window.verObservacion = function(texto, titulo) {
+    document.getElementById("titulo-modal-obs").innerText = titulo;
+    document.getElementById("texto-modal-obs").innerText = texto;
+    modalVerObs.style.display = "block";
+};
