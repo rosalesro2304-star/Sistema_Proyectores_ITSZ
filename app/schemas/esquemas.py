@@ -99,13 +99,21 @@ class ProyectorCrear(BaseModel):
     id_proyector: str
     descripcion: str
 
-    # --- ESQUEMA PARA EL HISTORIAL DE LA CASETA (NUEVO) ---
+   # --- ESQUEMA PARA EL HISTORIAL DE LA CASETA ---
 class PrestamoHistorialRespuesta(BaseModel):
     id_prestamo: int
     fecha_prestamo: date
     hora_salida: time
-    hora_entrega: time | None = None  # Puede ser nulo si sigue en uso
+    hora_entrega: time | None = None
     estado_prestamo: str
+    
+    # --- Variables agregadas para el historial ---
+    incluye_cable: bool  
+    observaciones: str | None = None
+    firma_salida: str | None = None
+    firma_entrega: str | None = None
+    # ---------------------------------------------
+    
     docente: DocenteRespuesta
     proyector: ProyectorRespuesta
 

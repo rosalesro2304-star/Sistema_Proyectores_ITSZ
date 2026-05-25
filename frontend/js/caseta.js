@@ -442,32 +442,31 @@ async function cargarHistorial() {
 }
 
 // Pintar la tabla aplicando filtros
+// Pintar la tabla aplicando filtros, cable HDMI, observaciones y firmas
 function renderizarHistorial() {
     const tbody = document.querySelector("#tabla-historial tbody");
     tbody.innerHTML = "";
     
     const orden = document.getElementById("orden-historial").value;
     
-    // Hacer una copia del arreglo para poder ordenarlo
     let datosOrdenados = [...datosHistorialGlobal];
     
-    // Lógica matemática para ordenar fechas
+    // Ordenar fechas
     datosOrdenados.sort((a, b) => {
         const fechaHoraA = new Date(`${a.fecha_prestamo}T${a.hora_salida}`);
         const fechaHoraB = new Date(`${b.fecha_prestamo}T${b.hora_salida}`);
         return orden === "desc" ? fechaHoraB - fechaHoraA : fechaHoraA - fechaHoraB;
     });
 
+    // Ahora son 10 columnas, actualizamos el colspan
     if (datosOrdenados.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='7'>No hay registros en el historial.</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='10'>No hay registros en el historial.</td></tr>";
         return;
     }
 
-    // Obtener la fecha de hoy en formato YYYY-MM-DD
     const hoyDate = new Date();
     const hoyStr = hoyDate.getFullYear() + "-" + String(hoyDate.getMonth() + 1).padStart(2, '0') + "-" + String(hoyDate.getDate()).padStart(2, '0');
 
-    // Función auxiliar rápida para dar formato a la hora en esta tabla
     const formatHora = (h) => {
         if (!h) return "--:--";
         const [horas, minutos] = h.split(':');
@@ -481,7 +480,6 @@ function renderizarHistorial() {
         const horaSalidaLimpia = formatHora(p.hora_salida);
         const horaEntregaLimpia = p.hora_entrega ? formatHora(p.hora_entrega) : '---';
         
-        // Magia visual: Si la fecha es hoy, pintamos "Hoy" en azul. Si no, la fecha normal.
         const displayFecha = p.fecha_prestamo === hoyStr 
             ? '<strong style="color:#007bff;">Hoy</strong>' 
             : p.fecha_prestamo;
@@ -489,6 +487,28 @@ function renderizarHistorial() {
         const badgeEstado = p.estado_prestamo === "Devuelto" 
             ? '<span style="background:#d4edda; color:#155724; padding:3px 8px; border-radius:10px; font-size:12px; font-weight:bold;">Devuelto</span>'
             : '<span style="background:#fff3cd; color:#856404; padding:3px 8px; border-radius:10px; font-size:12px; font-weight:bold;">En Uso</span>';
+
+        // Lógica visual del cable HDMI
+        const badgeCable = p.incluye_cable 
+            ? '<span style="font-size:16px;" title="Se llevó cable HDMI">✅</span>' 
+            : '<span style="font-size:16px;" title="No lleva cable">❌</span>';
+
+        // Lógica de observaciones
+        const textoObservaciones = p.observaciones 
+            ? `<span style="font-size: 12px; color: #555;" title="${p.observaciones}">${p.observaciones}</span>` 
+            : '<span style="color: #bbb; font-style: italic;">Ninguna</span>';
+
+        // Lógica de botones de firmas
+        let botonesFirmas = '';
+        if (p.firma_salida) {
+            botonesFirmas += `<button onclick="verFirma('${p.firma_salida}')" style="background:#6c757d; color:white; border:none; padding:3px 6px; border-radius:4px; cursor:pointer; font-size:11px; margin-right:3px;" title="Ver firma de salida">✍️ Salida</button>`;
+        }
+        if (p.firma_entrega) {
+            botonesFirmas += `<button onclick="verFirma('${p.firma_entrega}')" style="background:#28a745; color:white; border:none; padding:3px 6px; border-radius:4px; cursor:pointer; font-size:11px;" title="Ver firma de entrega">✍️ Entrada</button>`;
+        }
+        if (!p.firma_salida && !p.firma_entrega) {
+            botonesFirmas = '<span style="color: #bbb;">Sin firmas</span>';
+        }
 
         const fila = `
             <tr>
@@ -498,6 +518,9 @@ function renderizarHistorial() {
                 <td>${horaEntregaLimpia}</td>
                 <td>${p.docente.nombre_completo}</td>
                 <td>${p.proyector.descripcion}</td>
+                <td style="text-align:center;">${badgeCable}</td>
+                <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${textoObservaciones}</td>
+                <td style="text-align:center; white-space: nowrap;">${botonesFirmas}</td>
                 <td style="text-align:center;">${badgeEstado}</td>
             </tr>
         `;
@@ -505,5 +528,3 @@ function renderizarHistorial() {
     });
 }
 
-// Escuchar cambios en el selector para reordenar al instante sin volver a consultar al servidor
-document.getElementById("orden-historial")?.addEventListener("change", renderizarHistorial);
