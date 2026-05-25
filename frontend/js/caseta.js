@@ -7,7 +7,7 @@ let datosHistorialGlobal = [];
 // CONTROL DE CARGA INICIAL Y NAVEGACIÓN
 // ==========================================
 document.addEventListener("DOMContentLoaded", async () => {
-
+    // 1. Validar inicio de sesión mediante almacenamiento local
     const idUsuario = localStorage.getItem("id_usuario");
     if (!idUsuario) {
         alert("Debes iniciar sesión primero.");
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
- 
+    // 2. Lógica del Widget de Perfil
     const username = localStorage.getItem("username") || "Usuario";
     const rol = localStorage.getItem("rol") || "Vigilante";
 
@@ -31,30 +31,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("modal-rol-grande").innerText = "Rol: " + rol;
         modalPerfil.style.display = "block";
     });
- 
+
     document.getElementById("cerrar-modal-perfil")?.addEventListener("click", () => {
         modalPerfil.style.display = "none";
     });
 
- 
     document.getElementById("btn-cerrar-sesion-modal")?.addEventListener("click", () => {
         localStorage.clear();
         window.location.href = "index.html";
     });
 
-    // Control del modal de historial
+    // Control del modal de historial grande
     const modalHistorial = document.getElementById("modal-historial");
     document.getElementById("btn-ver-historial")?.addEventListener("click", () => {
         modalHistorial.style.display = "block";
         cargarHistorial();
     });
+
     document.getElementById("cerrar-modal-historial")?.addEventListener("click", () => {
         modalHistorial.style.display = "none";
     });
 
-    // Cambios en el selector de ordenamiento del historial
+    // Escuchar cambios en el selector de ordenamiento del historial
     document.getElementById("orden-historial")?.addEventListener("change", renderizarHistorial);
 
+    // Cargar la tabla principal al arrancar
     cargarPrestamosActivos();
 });
 
@@ -68,12 +69,12 @@ async function cargarPrestamosActivos() {
 
     function formatearHoraAmPm(horaBackend) {
         if (!horaBackend) return "--:--";
-
+    
         const fecha = new Date(horaBackend);
         if (!isNaN(fecha.getTime())) {
             return fecha.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
         }
-
+    
         const partes = horaBackend.split(':');
         if (partes.length >= 2) {
             let h = parseInt(partes[0], 10);
@@ -92,27 +93,28 @@ async function cargarPrestamosActivos() {
             const prestamos = await respuesta.json();
             tbody.innerHTML = ""; 
 
+            // Corregido a 7 columnas correspondientes al nuevo diseño de tabla
             if (prestamos.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='7'>No hay proyectores prestados en este momento.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='7' style='text-align:center;'>No hay proyectores prestados en este momento.</td></tr>";
                 return;
             }
 
 
             prestamos.forEach(prestamo => {
-
+            
                 const horaLimpia = formatearHoraAmPm(prestamo.hora_salida);
- 
+                
+                // Badge dinámico para indicar el estado del cable HDMI
                 const cableBadge = prestamo.incluye_cable 
                     ? '<span style="font-size:20px;" title="Se llevó cable HDMI">✅</span>' 
                     : '<span style="font-size:20px;" title="No lleva cable">❌</span>';
                 
-
-                    const btnFirma = prestamo.firma_salida 
+                // Botón interactivo para examinar la firma de salida
+                const btnFirma = prestamo.firma_salida 
                     ? `<button onclick="verFirma('${prestamo.firma_salida}')" style="background:#17a2b8; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:bold;">👁️ Ver Firma</button>` 
                     : 'Sin firma';
 
-
-                    const obsSegura = prestamo.observaciones ? prestamo.observaciones.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
+                const obsSegura = prestamo.observaciones ? prestamo.observaciones.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
 
                 const fila = `
                     <tr>
@@ -138,17 +140,17 @@ async function cargarPrestamosActivos() {
             });
         }
     } catch (error) {
-        console.error("Error al cargar la tabla:", error);
+        console.error("Error al cargar la tabla de activos:", error);
         tbody.innerHTML = "<tr><td colspan='7' style='color:red;'>Error de conexión con el servidor.</td></tr>";
     }
 }
 
 
 // ==========================================
-// FUNCIONES GLOBALES INTERACTIVAS (MODALES SECUNDARIOS)
+// FUNCIONES GLOBALES (CONTROLES INTERACTIVOS)
 // ==========================================
 
-// Control Modal Ver Firma
+
 window.verFirma = function(firmaBase64) {
     document.getElementById("img-firma-mostrar").src = firmaBase64;
     document.getElementById("modal-ver-firma").style.display = "block";
@@ -157,7 +159,7 @@ document.getElementById("cerrar-modal-ver-firma").onclick = () => {
     document.getElementById("modal-ver-firma").style.display = "none";
 };
 
-// Control Modal Ver Observaciones
+
 window.verObservacion = function(texto, titulo) {
     document.getElementById("titulo-modal-obs").innerText = titulo;
     document.getElementById("texto-modal-obs").innerText = texto;
@@ -167,7 +169,7 @@ document.getElementById("cerrar-modal-ver-obs").onclick = () => {
     document.getElementById("modal-ver-obs").style.display = "none";
 };
 
-// Control Modal Editar
+
 window.abrirEditar = function(id, tieneCable, observaciones) {
     idAEditar = id;
     document.getElementById("edit-id-prestamo").innerText = id;
@@ -199,11 +201,11 @@ document.getElementById("btn-guardar-edicion").addEventListener("click", async (
             cargarPrestamosActivos();
         } else {
             const err = await respuesta.json();
-            alert("Error al editar (Verifica tu backend): " + (err.detail || ""));
+            alert("Error al editar: " + (err.detail || ""));
         }
     } catch (error) {
         console.error("Error:", error);
-        alert("Falló la conexión.");
+        alert("Falló la conexión al editar.");
     }
 });
 
@@ -242,7 +244,7 @@ function renderizarHistorial() {
     });
 
     if (datosOrdenados.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='11'>No hay registros en el historial.</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='11' style='text-align:center;'>No hay registros en el historial.</td></tr>";
         return;
     }
 
@@ -296,15 +298,15 @@ function renderizarHistorial() {
             ? `<button onclick="verObservacion('${obsEntradaSegura}', 'Observaciones de Entrada')" style="background:#6c757d; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px; font-weight:bold;">📄 Ver</button>`
             : `<span style="color:#bbb; font-style:italic; font-size:11px;">Pendiente</span>`;
 
-        let botonesFirmas = '';
+        let BlackBoxesFirmas = '';
         if (p.firma_salida) {
-            botonesFirmas += `<button onclick="verFirma('${p.firma_salida}')" style="background:#17a2b8; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:11px; margin-right:3px; font-weight:bold;">Salida</button>`;
+            BlackBoxesFirmas += `<button onclick="verFirma('${p.firma_salida}')" style="background:#17a2b8; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:11px; margin-right:3px; font-weight:bold;">Salida</button>`;
         }
         if (p.firma_entrega) {
-            botonesFirmas += `<button onclick="verFirma('${p.firma_entrega}')" style="background:#28a745; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:11px; font-weight:bold;">Entrada</button>`;
+            BlackBoxesFirmas += `<button onclick="verFirma('${p.firma_entrega}')" style="background:#28a745; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:11px; font-weight:bold;">Entrada</button>`;
         }
         if (!p.firma_salida && !p.firma_entrega) {
-            botonesFirmas = '<span style="color: #bbb; font-size:11px;">Sin firmas</span>';
+            BlackBoxesFirmas = '<span style="color: #bbb; font-size:11px;">Sin firmas</span>';
         }
 
         const fila = `
@@ -318,7 +320,7 @@ function renderizarHistorial() {
                 <td style="text-align:center;">${badgeCable}</td>
                 <td style="text-align:center;">${btnObsSalida}</td>
                 <td style="text-align:center;">${btnObsEntrada}</td>
-                <td style="text-align:center; white-space: nowrap;">${botonesFirmas}</td>
+                <td style="text-align:center; white-space: nowrap;">${BlackBoxesFirmas}</td>
                 <td style="text-align:center;">${badgeEstado}</td>
             </tr>
         `;
@@ -327,7 +329,7 @@ function renderizarHistorial() {
 }
 
 // ==========================================
-// FLUJO ORIGINAL DE MODALES Y CANVAS
+// GESTIÓN DE NUEVOS PRÉSTAMOS Y CANVAS
 // ==========================================
 function recibirProyector(id) {
     idPrestamoActual = id;
@@ -384,7 +386,7 @@ async function cargarSelects() {
     }
 }
 
-// LIENZOS DIGITALES
+
 const canvas = document.getElementById('lienzo-firma');
 const ctx = canvas.getContext('2d');
 let dibujando = false;
@@ -412,6 +414,7 @@ canvas.addEventListener('mousemove', (e) => { if (!dibujando) return; const pos 
 canvas.addEventListener('touchstart', (e) => { e.preventDefault(); dibujando = true; ctx.beginPath(); const pos = obtenerPosicion(e, canvas); ctx.moveTo(pos.x, pos.y); }, { passive: false });
 canvas.addEventListener('touchend', (e) => { e.preventDefault(); dibujando = false; ctx.beginPath(); }, { passive: false });
 canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (!dibujando) return; const pos = obtenerPosicion(e, canvas); ctx.lineTo(pos.x, pos.y); ctx.stroke(); }, { passive: false });
+
 
 document.getElementById('btn-limpiar-firma').addEventListener('click', () => ctx.clearRect(0, 0, canvas.width, canvas.height));
 
@@ -441,7 +444,7 @@ canvasDev.addEventListener('touchmove', (e) => { e.preventDefault(); if (!dibuja
 
 document.getElementById('btn-limpiar-firma-dev').addEventListener('click', () => ctxDev.clearRect(0, 0, canvasDev.width, canvasDev.height));
 
-// PETICIONES HTTP REST
+
 document.getElementById('btn-guardar-prestamo').addEventListener('click', async (e) => {
     e.preventDefault(); 
 
@@ -462,8 +465,7 @@ document.getElementById('btn-guardar-prestamo').addEventListener('click', async 
         const respuesta = await fetch(`${API_URL}/api/prestamos`, {
             method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cargaUtil)
         });
-
-
+    
         if (respuesta.ok) {
             alert("¡Préstamo registrado con éxito!");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -479,8 +481,7 @@ document.getElementById('btn-guardar-prestamo').addEventListener('click', async 
 
 document.getElementById('btn-confirmar-devolucion').addEventListener('click', async (e) => {
     e.preventDefault();
-
-
+    
     const firmaBase64 = canvasDev.toDataURL("image/png");
     if (firmaBase64.length < 1500) { alert("El docente debe firmar la entrega del proyector."); return; }
 
@@ -491,7 +492,7 @@ document.getElementById('btn-confirmar-devolucion').addEventListener('click', as
             method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cargaUtil)
         });
 
-
+        
         if (respuesta.ok) {
             alert("¡Proyector devuelto y liberado con éxito en el inventario!");
             ctxDev.clearRect(0, 0, canvasDev.width, canvasDev.height);
@@ -502,6 +503,8 @@ document.getElementById('btn-confirmar-devolucion').addEventListener('click', as
             const err = await respuesta.json(); alert("Error del servidor: " + err.detail);
         }
     } catch (error) { console.error("Error al devolver:", error); alert("Error de conexión al registrar la devolución."); }
+
+
 });
 
 

@@ -27,16 +27,16 @@
 
     <h3>Proyectores En Uso (Activos)</h3>
     
-    <table id="tabla-activos">
+    <table id="tabla-activos" style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr>
-                <th>ID Préstamo</th>
-                <th>Hora Salida</th>
-                <th>Docente</th>
-                <th>Proyector</th>
-                <th>Cable HDMI</th> 
-                <th>Firma</th>      
-                <th>Acciones</th>   
+                <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">ID Préstamo</th>
+                <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Hora Salida</th>
+                <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Docente</th>
+                <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Proyector</th>
+                <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Cable HDMI</th> 
+                <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Firma</th>      
+                <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Acciones</th>   
             </tr>
         </thead>
         <tbody>
@@ -141,54 +141,4 @@
                             <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Entrada</th>
                             <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Docente</th>
                             <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Proyector</th>
-                            <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">HDMI</th>
-                            <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Obs. Salida</th>
-                            <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Obs. Entrada</th>
-                            <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Firmas</th>
-                            <th style="background-color: #343a40; color: #ffffff; padding: 10px; border-bottom: 2px solid #212529;">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-ver-firma" class="modal" style="z-index: 2000 !important;">
-        <div class="modal-content" style="text-align: center;">
-            <span class="close" id="cerrar-modal-ver-firma">&times;</span>
-            <h2>Firma Registrada</h2>
-            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px dashed #ccc; margin-top: 15px;">
-                <img id="img-firma-mostrar" src="" style="width: 100%; max-width: 400px; background: white;" alt="Firma del Docente">
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-ver-obs" class="modal" style="z-index: 2000 !important;">
-        <div class="modal-content" style="max-width: 450px;">
-            <span class="close" id="cerrar-modal-ver-obs">&times;</span>
-            <h2 id="titulo-modal-obs">Observaciones</h2>
-            <div style="background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-top: 15px; min-height: 80px; box-sizing: border-box;">
-                <p id="texto-modal-obs" style="margin: 0; color: #333; font-size: 14px; white-space: pre-wrap; word-break: break-word; line-height: 1.5;"></p>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-perfil" class="modal">
-        <div class="modal-content" style="text-align: center; max-width: 320px;">
-            <span class="close" id="cerrar-modal-perfil">&times;</span>
-            
-            <div style="font-size: 80px; margin-bottom: 10px;">👤</div>
-            <h2 id="modal-username-grande" style="margin-top: 0; color: #333;">Usuario</h2>
-            <p id="modal-rol-grande" style="color: #666; font-weight: bold; margin-bottom: 25px;">Rol</p>
-            
-            <button id="btn-cerrar-sesion-modal" style="background-color: #c0392b; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold;">
-                🚪 Cerrar Sesión
-            </button>
-        </div>
-    </div>
-
-    <script src="js/caseta.js"></script>
-</body>
-</html>
+                            <th style="background-color: #343a40; color: #ffffff; padding: 10px
