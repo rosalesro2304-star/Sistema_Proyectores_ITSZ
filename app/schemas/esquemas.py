@@ -98,3 +98,16 @@ class DocenteCrear(BaseModel):
 class ProyectorCrear(BaseModel):
     id_proyector: str
     descripcion: str
+
+    # --- ESQUEMA PARA EL HISTORIAL DE LA CASETA (NUEVO) ---
+class PrestamoHistorialRespuesta(BaseModel):
+    id_prestamo: int
+    fecha_prestamo: date
+    hora_salida: time
+    hora_entrega: time | None = None  # Puede ser nulo si sigue en uso
+    estado_prestamo: str
+    docente: DocenteRespuesta
+    proyector: ProyectorRespuesta
+
+    class Config:
+        from_attributes = True

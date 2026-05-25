@@ -132,6 +132,12 @@ def obtener_prestamos_activos(db: Session = Depends(get_db)):
     prestamos_activos = db.query(modelos.Prestamo).filter(modelos.Prestamo.estado_prestamo == "En Uso").all()
     
     return prestamos_activos
+@app.get("/api/prestamos/historial", response_model=list[esquemas.PrestamoHistorialRespuesta])
+def obtener_historial_prestamos(db: Session = Depends(get_db)):
+    """Retorna absolutamente todos los préstamos (activos y devueltos) para auditoría del vigilante"""
+    # Obtenemos todos los registros de la tabla
+    historial = db.query(modelos.Prestamo).all()
+    return historial
 
 # ==========================================
 # 4. COMPLETANDO EL CRUD (ACTUALIZAR Y ELIMINAR)

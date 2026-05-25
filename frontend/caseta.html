@@ -22,6 +22,9 @@
 
     <button class="btn-nuevo" id="btn-nuevo-prestamo">+ Registrar Salida de Proyector</button>
 
+
+    <button class="btn-nuevo" id="btn-ver-historial" style="background: #17a2b8; margin-left: 10px;">📜 Consultar Historial</button>
+
     <h3>Proyectores En Uso (Activos)</h3>
     
     <table id="tabla-activos">
@@ -125,6 +128,39 @@
         </div>
     </div>
 
+    <div id="modal-historial" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close" id="cerrar-modal-historial">&times;</span>
+            <h2>Historial de Movimientos</h2>
+            
+            <div style="text-align: right; margin-bottom: 15px;">
+                <label for="orden-historial" style="font-weight: bold; margin-right: 10px;">Ordenar por:</label>
+                <select id="orden-historial" style="padding: 8px; border-radius: 4px;">
+                    <option value="desc">Más recientes primero (▼)</option>
+                    <option value="asc">Más antiguos primero (▲)</option>
+                </select>
+            </div>
+
+            <div style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">
+                <table id="tabla-historial" style="width: 100%; margin-top: 0;">
+                    <thead style="position: sticky; top: 0; background: #343a40; color: white;">
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Salida</th>
+                            <th>Entrada</th>
+                            <th>Docente</th>
+                            <th>Proyector</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
     <div id="modal-perfil" class="modal">
         <div class="modal-content" style="text-align: center; max-width: 320px;">
             <span class="close" id="cerrar-modal-perfil">&times;</span>

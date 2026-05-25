@@ -405,3 +405,105 @@ document.getElementById('btn-confirmar-devolucion').addEventListener('click', as
         alert("Error de conexión al registrar la devolución.");
     }
 });
+
+// ==========================================
+// NUEVO: SISTEMA DE HISTORIAL Y ORDENAMIENTO
+// ==========================================
+let datosHistorialGlobal = [];
+const modalHistorial = document.getElementById("modal-historial");
+
+// Abrir y cerrar modal
+document.getElementById("btn-ver-historial")?.addEventListener("click", () => {
+    modalHistorial.style.display = "block";
+    cargarHistorial();
+});
+
+document.getElementById("cerrar-modal-historial")?.addEventListener("click", () => {
+    modalHistorial.style.display = "none";
+});
+
+// Consultar API
+async function cargarHistorial() {
+    const tbody = document.querySelector("#tabla-historial tbody");
+    tbody.innerHTML = "<tr><td colspan='7'>Cargando historial desde el servidor...</td></tr>";
+    
+    try {
+        const respuesta = await fetch(`${API_URL}/api/prestamos/historial`);
+        if (respuesta.ok) {
+            datosHistorialGlobal = await respuesta.json();
+            renderizarHistorial(); // Llama a la función que pinta y ordena
+        } else {
+            tbody.innerHTML = "<tr><td colspan='7' style='color:red;'>Error al obtener historial.</td></tr>";
+        }
+    } catch (error) {
+        console.error("Error historial:", error);
+        tbody.innerHTML = "<tr><td colspan='7' style='color:red;'>Error de conexión con el backend.</td></tr>";
+    }
+}
+
+// Pintar la tabla aplicando filtros
+function renderizarHistorial() {
+    const tbody = document.querySelector("#tabla-historial tbody");
+    tbody.innerHTML = "";
+    
+    const orden = document.getElementById("orden-historial").value;
+    
+    // Hacer una copia del arreglo para poder ordenarlo
+    let datosOrdenados = [...datosHistorialGlobal];
+    
+    // Lógica matemática para ordenar fechas
+    datosOrdenados.sort((a, b) => {
+        const fechaHoraA = new Date(`${a.fecha_prestamo}T${a.hora_salida}`);
+        const fechaHoraB = new Date(`${b.fecha_prestamo}T${b.hora_salida}`);
+        return orden === "desc" ? fechaHoraB - fechaHoraA : fechaHoraA - fechaHoraB;
+    });
+
+    if (datosOrdenados.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='7'>No hay registros en el historial.</td></tr>";
+        return;
+    }
+
+    // Obtener la fecha de hoy en formato YYYY-MM-DD
+    const hoyDate = new Date();
+    const hoyStr = hoyDate.getFullYear() + "-" + String(hoyDate.getMonth() + 1).padStart(2, '0') + "-" + String(hoyDate.getDate()).padStart(2, '0');
+
+    // Función auxiliar rápida para dar formato a la hora en esta tabla
+    const formatHora = (h) => {
+        if (!h) return "--:--";
+        const [horas, minutos] = h.split(':');
+        let hr = parseInt(horas);
+        const ampm = hr >= 12 ? 'PM' : 'AM';
+        hr = hr % 12 || 12;
+        return `${hr < 10 ? '0'+hr : hr}:${minutos} ${ampm}`;
+    };
+
+    datosOrdenados.forEach(p => {
+        const horaSalidaLimpia = formatHora(p.hora_salida);
+        const horaEntregaLimpia = p.hora_entrega ? formatHora(p.hora_entrega) : '---';
+        
+        // Magia visual: Si la fecha es hoy, pintamos "Hoy" en azul. Si no, la fecha normal.
+        const displayFecha = p.fecha_prestamo === hoyStr 
+            ? '<strong style="color:#007bff;">Hoy</strong>' 
+            : p.fecha_prestamo;
+        
+        const badgeEstado = p.estado_prestamo === "Devuelto" 
+            ? '<span style="background:#d4edda; color:#155724; padding:3px 8px; border-radius:10px; font-size:12px; font-weight:bold;">Devuelto</span>'
+            : '<span style="background:#fff3cd; color:#856404; padding:3px 8px; border-radius:10px; font-size:12px; font-weight:bold;">En Uso</span>';
+
+        const fila = `
+            <tr>
+                <td>#${p.id_prestamo}</td>
+                <td>${displayFecha}</td>
+                <td>${horaSalidaLimpia}</td>
+                <td>${horaEntregaLimpia}</td>
+                <td>${p.docente.nombre_completo}</td>
+                <td>${p.proyector.descripcion}</td>
+                <td style="text-align:center;">${badgeEstado}</td>
+            </tr>
+        `;
+        tbody.innerHTML += fila;
+    });
+}
+
+// Escuchar cambios en el selector para reordenar al instante sin volver a consultar al servidor
+document.getElementById("orden-historial")?.addEventListener("change", renderizarHistorial);
