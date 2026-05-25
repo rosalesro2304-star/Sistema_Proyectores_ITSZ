@@ -16,6 +16,7 @@ class Docente(Base):
     
     id_docente = Column(Integer, primary_key=True, index=True)
     nombre_completo = Column(String(150), nullable=False)
+    activo = Column(Boolean, default=True) # NUEVO: Para borrado lógico
 
 class Proyector(Base):
     __tablename__ = "proyectores"
@@ -23,6 +24,7 @@ class Proyector(Base):
     id_proyector = Column(String(20), primary_key=True, index=True) # Ej. 'V-4'
     descripcion = Column(String(150), nullable=False)
     estado = Column(String(30), default="Disponible", nullable=False)
+    activo = Column(Boolean, default=True) # NUEVO: Para borrado lógico
 
 class Prestamo(Base):
     __tablename__ = "prestamos"

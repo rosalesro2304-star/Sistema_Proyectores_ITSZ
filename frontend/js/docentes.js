@@ -65,7 +65,7 @@ async function cargarDocentes() {
                         <td>${docente.nombre_completo}</td>
                         <td>
                             <button onclick="eliminarDocente(${docente.id_docente})" style="background:#dc3545; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">
-                                Eliminar
+                                Dar de baja
                             </button>
                         </td>
                     </tr>
@@ -103,9 +103,9 @@ document.getElementById("btn-guardar-docente").addEventListener("click", async (
     }
 });
 
-// DELETE: Borrar un maestro
+// DELETE: Borrar un maestro (Borrado lógico)
 async function eliminarDocente(id) {
-    if (!confirm(`¿Estás seguro de que deseas eliminar al docente con ID ${id}?`)) {
+    if (!confirm(`¿Estás seguro de que deseas dar de baja al docente con ID ${id}? (Se conservará en el historial)`)) {
         return;
     }
 

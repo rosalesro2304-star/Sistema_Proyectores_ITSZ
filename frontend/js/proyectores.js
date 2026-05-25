@@ -55,7 +55,7 @@ async function cargarProyectores() {
             }
 
             proyectores.forEach(p => {
-                // AQUÍ ESTÁ LA CORRECCIÓN: La lógica visual va ADENTRO del ciclo para evaluar cada proyector
+                // La lógica visual va ADENTRO del ciclo para evaluar cada proyector
                 const badgeEstado = p.estado === "Disponible"
                     ? '<span style="background:#d4edda; color:#155724; padding:4px 8px; border-radius:10px; font-weight:bold; font-size:12px;">🟢 Disponible</span>'
                     : '<span style="background:#fff3cd; color:#856404; padding:4px 8px; border-radius:10px; font-weight:bold; font-size:12px;">🟡 En Uso</span>';
@@ -107,10 +107,15 @@ document.getElementById("btn-guardar-proyector").addEventListener("click", async
 });
 
 async function eliminarProyector(id) {
-    if (!confirm(`¿Eliminar proyector ${id}?`)) return;
+    if (!confirm(`¿Seguro que deseas dar de baja el proyector ${id}? (Se conservará en el historial)`)) return;
     try {
         const respuesta = await fetch(`https://sistema-proyectores-itsz.onrender.com/api/proyectores/${id}`, { method: "DELETE" });
-        if (respuesta.ok) cargarProyectores();
+        if (respuesta.ok) {
+            cargarProyectores();
+        } else {
+            const err = await respuesta.json();
+            alert("Error: " + err.detail);
+        }
     } catch (error) {
         console.error("Error:", error);
     }
