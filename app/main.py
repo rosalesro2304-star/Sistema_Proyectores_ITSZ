@@ -294,6 +294,12 @@ def crear_proyector(proyector: esquemas.ProyectorCrear, db: Session = Depends(ge
     db.refresh(nuevo_proyector)
     return nuevo_proyector
 
+@app.get("/api/proyectores", response_model=list[esquemas.ProyectorRespuesta])
+def obtener_todos_los_proyectores(db: Session = Depends(get_db)):
+    """Retorna TODOS los proyectores (Disponibles y En Uso) para el Panel de Administración"""
+    proyectores = db.query(modelos.Proyector).all()
+    return proyectores
+
 @app.delete("/api/proyectores/{id_proyector}")
 def eliminar_proyector(id_proyector: str, db: Session = Depends(get_db)):
     """Elimina un proyector (ej. por avería permanente o pérdida)"""

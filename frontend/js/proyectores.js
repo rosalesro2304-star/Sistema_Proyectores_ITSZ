@@ -44,7 +44,8 @@ async function cargarProyectores() {
     tbody.innerHTML = "<tr><td colspan='4'>Cargando...</td></tr>";
 
     try {
-        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/proyectores/disponibles");
+        const respuesta = await fetch("https://sistema-proyectores-itsz.onrender.com/api/proyectores");
+        
         if (respuesta.ok) {
             const proyectores = await respuesta.json();
             tbody.innerHTML = "";
@@ -52,14 +53,20 @@ async function cargarProyectores() {
                 tbody.innerHTML = "<tr><td colspan='4'>No hay proyectores en el inventario.</td></tr>";
                 return;
             }
+
             proyectores.forEach(p => {
+                // AQUÍ ESTÁ LA CORRECCIÓN: La lógica visual va ADENTRO del ciclo para evaluar cada proyector
+                const badgeEstado = p.estado === "Disponible"
+                    ? '<span style="background:#d4edda; color:#155724; padding:4px 8px; border-radius:10px; font-weight:bold; font-size:12px;">🟢 Disponible</span>'
+                    : '<span style="background:#fff3cd; color:#856404; padding:4px 8px; border-radius:10px; font-weight:bold; font-size:12px;">🟡 En Uso</span>';
+
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${p.id_proyector}</strong></td>
                         <td>${p.descripcion}</td>
-                        <td><span style="background:#d4edda; color:#155724; padding:3px 8px; border-radius:10px; font-size:12px;">${p.estado}</span></td>
-                        <td>
-                            <button onclick="eliminarProyector('${p.id_proyector}')" style="background:#dc3545; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Dar de baja</button>
+                        <td style="text-align: center;">${badgeEstado}</td>
+                        <td style="text-align: center;">
+                            <button onclick="eliminarProyector('${p.id_proyector}')" style="background:#dc3545; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:bold;">Dar de baja</button>
                         </td>
                     </tr>
                 `;
