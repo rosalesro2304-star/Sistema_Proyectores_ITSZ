@@ -102,10 +102,11 @@ def obtener_proyectores_disponibles(db: Session = Depends(get_db)):
 
 @app.post("/api/prestamos")
 def registrar_prestamo(prestamo: esquemas.PrestamoCrear, db: Session = Depends(get_db)):
-    # 1. Armar el registro del préstamo con la hora real de México
+    # 1. Armar el registro del préstamo con la fecha y hora real de México
     nuevo_prestamo = modelos.Prestamo(
         id_docente=prestamo.id_docente,
         id_proyector=prestamo.id_proyector,
+        fecha_prestamo=datetime.now(ZoneInfo("America/Mexico_City")).date(), # <-- ¡ESTA ES LA LÍNEA NUEVA!
         hora_salida=datetime.now(ZoneInfo("America/Mexico_City")).time(),
         incluye_cable=prestamo.incluye_cable,
         observaciones=prestamo.observaciones,
@@ -123,6 +124,7 @@ def registrar_prestamo(prestamo: esquemas.PrestamoCrear, db: Session = Depends(g
     db.commit()
     
     return {"mensaje": "Préstamo registrado con éxito y proyector marcado en uso"}
+
 
 @app.get("/api/prestamos/activos", response_model=list[esquemas.PrestamoActivoRespuesta])
 def obtener_prestamos_activos(db: Session = Depends(get_db)):
